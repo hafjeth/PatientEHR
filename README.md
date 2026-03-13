@@ -1,57 +1,194 @@
-# Sample Hardhat 3 Beta Project (`node:test` and `viem`)
+# 🏥 Hệ Thống Hồ Sơ Y Tế Điện Tử Phi Tập Trung (Patient EHR)
 
-This project showcases a Hardhat 3 Beta project using the native Node.js test runner (`node:test`) and the `viem` library for Ethereum interactions.
+Dự án **Patient EHR** là một ứng dụng phi tập trung (**DApp**) giúp bệnh nhân đăng ký, quản lý và cập nhật hồ sơ khám bệnh một cách an toàn thông qua **Smart Contract trên Blockchain** và hệ thống lưu trữ phân tán **IPFS (Pinata)**.
 
-To learn more about the Hardhat 3 Beta, please visit the [Getting Started guide](https://hardhat.org/docs/getting-started#getting-started-with-hardhat-3). To share your feedback, join our [Hardhat 3 Beta](https://hardhat.org/hardhat3-beta-telegram-group) Telegram group or [open an issue](https://github.com/NomicFoundation/hardhat/issues/new) in our GitHub issue tracker.
+Dự án bao gồm 2 phần chính:
 
-## Project Overview
+- **Smart Contract (Blockchain):** Viết bằng Solidity, chạy trên mạng cục bộ Hardhat.
+- **Frontend (Giao diện Web):** HTML/CSS/JS kết hợp thư viện Viem để tương tác Web3.
 
-This example project includes:
+---
 
-- A simple Hardhat configuration file.
-- Foundry-compatible Solidity unit tests.
-- TypeScript integration tests using [`node:test`](nodejs.org/api/test.html), the new Node.js native test runner, and [`viem`](https://viem.sh/).
-- Examples demonstrating how to connect to different types of networks, including locally simulating OP mainnet.
+# 🛠 Yêu cầu môi trường
 
-## Usage
+Để chạy dự án, máy tính cần cài đặt sẵn:
 
-### Running Tests
+1. **[Node.js](https://nodejs.org/)** (v18 hoặc v20)
+2. **Ví MetaMask** (Extension trên trình duyệt)
+3. **Git** (Dùng để clone mã nguồn)
 
-To run all the tests in the project, execute the following command:
+---
 
-```shell
-npx hardhat test
+# 🚀 Hướng dẫn cài đặt và khởi chạy
+
+## Bước 1: Clone mã nguồn và cài đặt thư viện
+
+Mở **Terminal / Command Prompt** và chạy lần lượt các lệnh sau:
+
+```bash
+# 1. Clone dự án về máy
+git clone https://github.com/hafjeth/PatientEHR.git
+cd PatientEHR
+
+# 2. Cài đặt thư viện cho phần Smart Contract (thư mục gốc)
+npm install
+
+# 3. Cài đặt thư viện cho phần Frontend
+cd frontend
+npm install
+cd ..
 ```
 
-You can also selectively run the Solidity or `node:test` tests:
+---
 
-```shell
-npx hardhat test solidity
-npx hardhat test nodejs
+## Bước 2: Khởi động Blockchain cục bộ
+
+Mở **Terminal số 1** (tại thư mục gốc `PatientEHR`) và chạy lệnh:
+
+```bash
+npx hardhat node
 ```
 
-### Make a deployment to Sepolia
+⚠️ **Lưu ý:**  
+Lệnh này sẽ tạo ra **mạng Blockchain cục bộ kèm 20 ví test**.  
+Không tắt Terminal này trong suốt quá trình chạy dự án.
 
-This project includes an example Ignition module to deploy the contract. You can deploy this module to a locally simulated chain or to Sepolia.
+---
 
-To run the deployment to a local chain:
+## Bước 3: Deploy Smart Contract
 
-```shell
-npx hardhat ignition deploy ignition/modules/Counter.ts
+Mở **Terminal số 2** (cũng tại thư mục gốc `PatientEHR`) và chạy lệnh triển khai:
+
+```bash
+npx hardhat run scripts/deploy.ts --network localhost
 ```
 
-To run the deployment to Sepolia, you need an account with funds to send the transaction. The provided Hardhat configuration includes a Configuration Variable called `SEPOLIA_PRIVATE_KEY`, which you can use to set the private key of the account you want to use.
+**Lưu ý:** Nếu thư mục `scripts` dùng file `.js`, hãy đổi thành:
 
-You can set the `SEPOLIA_PRIVATE_KEY` variable using the `hardhat-keystore` plugin or by setting it as an environment variable.
-
-To set the `SEPOLIA_PRIVATE_KEY` config variable using `hardhat-keystore`:
-
-```shell
-npx hardhat keystore set SEPOLIA_PRIVATE_KEY
+```bash
+npx hardhat run scripts/deploy.js --network localhost
 ```
 
-After setting the variable, you can run the deployment with the Sepolia network:
+Sau khi chạy xong, Terminal sẽ trả về một **Địa chỉ Contract** (dạng `0x...`).  
+Hãy **copy địa chỉ này**.
 
-```shell
-npx hardhat ignition deploy --network sepolia ignition/modules/Counter.ts
+---
+
+## Bước 4: Kết nối Frontend với Blockchain
+
+1. Mở file:
+
 ```
+frontend/main.js
+```
+
+2. Tìm biến:
+
+```javascript
+const contractAddress = '...';
+```
+
+3. Dán **địa chỉ Contract** bạn vừa copy ở **Bước 3** vào.
+
+---
+
+### Đồng bộ file ABI
+
+1. Mở file:
+
+```
+artifacts/contracts/PatientRegistry.sol/PatientRegistry.json
+```
+
+2. **Copy toàn bộ nội dung**
+
+3. Dán **đè vào file**:
+
+```
+frontend/PatientRegistry.json
+```
+
+---
+
+## Bước 5: Khởi chạy Giao diện Web
+
+Tại **Terminal số 2**, di chuyển vào thư mục `frontend` và bật server:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Sau đó truy cập đường link (ví dụ):
+
+```
+http://localhost:5173
+```
+
+trên trình duyệt để sử dụng ứng dụng.
+
+---
+
+# 🦊 Hướng dẫn cấu hình ví MetaMask test
+
+Mở tiện ích **MetaMask** → Chọn danh sách mạng → **Add Network** → **Add a network manually**
+
+Điền thông số sau:
+
+```
+Tên mạng: Hardhat Localhost
+URL RPC mới: http://127.0.0.1:8545/
+Chain ID: 31337
+Ký hiệu tiền tệ: ETH
+```
+
+Sau đó:
+
+1. Chuyển sang mạng vừa tạo
+2. Chọn **Import Account**
+3. Copy một **Private Key bất kỳ từ Terminal Hardhat Node**
+4. Dán vào MetaMask
+
+Bạn sẽ nhận **10.000 ETH test**.
+
+---
+
+# ⚠️ Xử lý lỗi thường gặp (Troubleshooting)
+
+## Lỗi kẹt giao dịch (Nonce quá cao)
+
+**Nguyên nhân**
+
+Tắt bật lại **Hardhat Node** làm reset dữ liệu, nhưng MetaMask vẫn nhớ lịch sử giao dịch cũ.
+
+**Cách khắc phục**
+
+MetaMask → **Settings** → **Advanced** → **Clear activity tab data**
+
+---
+
+## Lỗi "Ví chưa đăng ký" khi login
+
+**Nguyên nhân**
+
+Contract vừa được **deploy lại hoàn toàn mới**, nên dữ liệu trống.
+
+**Khắc phục**
+
+Truy cập trang **Register** để đăng ký lại tài khoản từ đầu.
+
+---
+
+## Lỗi không lấy được dữ liệu / Revert
+
+**Khắc phục**
+
+Đảm bảo bạn đã làm đúng **Bước 4 (Copy ABI mới nhất)**.
+
+Nếu code **Smart Contract thay đổi**, hãy chạy lại:
+
+```bash
+npx hardhat compile
+```
+
+sau đó **copy lại ABI mới sang frontend**.
