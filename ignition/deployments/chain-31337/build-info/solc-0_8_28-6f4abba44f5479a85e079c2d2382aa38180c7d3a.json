@@ -1,0 +1,39 @@
+{
+  "_format": "hh3-sol-build-info-1",
+  "id": "solc-0_8_28-6f4abba44f5479a85e079c2d2382aa38180c7d3a",
+  "solcVersion": "0.8.28",
+  "solcLongVersion": "0.8.28+commit.7893614a",
+  "userSourceNameMap": {
+    "contracts/PatientRegistry.sol": "project/contracts/PatientRegistry.sol"
+  },
+  "input": {
+    "language": "Solidity",
+    "settings": {
+      "evmVersion": "cancun",
+      "optimizer": {
+        "enabled": true,
+        "runs": 200
+      },
+      "outputSelection": {
+        "*": {
+          "": [
+            "ast"
+          ],
+          "*": [
+            "abi",
+            "evm.bytecode",
+            "evm.deployedBytecode",
+            "evm.methodIdentifiers",
+            "metadata"
+          ]
+        }
+      },
+      "remappings": []
+    },
+    "sources": {
+      "project/contracts/PatientRegistry.sol": {
+        "content": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.20;\r\n\r\ncontract PatientRegistry {\r\n    struct Patient {\r\n        string name;\r\n        string email;\r\n        string dob;         // Đổi age thành dob (Ngày sinh) để khớp với input type=\"date\"\r\n        string bloodGroup;  // Thêm Nhóm máu\r\n        string recordHash;  // Mã CID từ IPFS\r\n        bool isRegistered;\r\n    }\r\n\r\n    // Mapping từ địa chỉ ví sang thông tin bệnh nhân\r\n    mapping(address => Patient) private patients;\r\n    // Mapping từ email sang địa chỉ ví (để hỗ trợ login bằng email)\r\n    mapping(string => address) private emailToAddress;\r\n\r\n    event PatientRegistered(address indexed patientAddress, string name, string email);\r\n    event RecordUpdated(address indexed patientAddress, string newRecordHash);\r\n\r\n    /**\r\n     * @dev Đăng ký bệnh nhân mới\r\n     */\r\n    function registerPatient(\r\n        string memory _name, \r\n        string memory _email, \r\n        string memory _dob, \r\n        string memory _bloodGroup,\r\n        string memory _hash\r\n    ) public {\r\n        require(!patients[msg.sender].isRegistered, \"Loi: Vi nay da duoc dang ky!\");\r\n        require(emailToAddress[_email] == address(0), \"Loi: Email nay da duoc su dung!\");\r\n        \r\n        patients[msg.sender] = Patient({\r\n            name: _name,\r\n            email: _email,\r\n            dob: _dob,\r\n            bloodGroup: _bloodGroup,\r\n            recordHash: _hash,\r\n            isRegistered: true\r\n        });\r\n\r\n        emailToAddress[_email] = msg.sender;\r\n\r\n        emit PatientRegistered(msg.sender, _name, _email);\r\n    }\r\n\r\n    /**\r\n     * @dev Cập nhật hồ sơ bệnh án mới (Chỉ cập nhật mã băm IPFS)\r\n     */\r\n    function updateRecord(string memory _newHash) public {\r\n        require(patients[msg.sender].isRegistered, \"Loi: Ban chua dang ky thong tin!\");\r\n        patients[msg.sender].recordHash = _newHash;\r\n        \r\n        emit RecordUpdated(msg.sender, _newHash);\r\n    }\r\n\r\n    /**\r\n     * @dev Lấy thông tin cá nhân của chính mình\r\n     * Trả về đúng 5 trường dữ liệu để Frontend map vào giao diện\r\n     */\r\n    function getMyDetails() public view returns (\r\n        string memory name, \r\n        string memory email, \r\n        string memory dob, \r\n        string memory recordHash, \r\n        string memory bloodGroup\r\n    ) {\r\n        require(patients[msg.sender].isRegistered, \"Loi: Ban chua dang ky thong tin!\");\r\n        Patient memory p = patients[msg.sender];\r\n        // Trả về theo thứ tự: 0=name, 1=email, 2=dob, 3=recordHash, 4=bloodGroup\r\n        return (p.name, p.email, p.dob, p.recordHash, p.bloodGroup);\r\n    }\r\n\r\n    /**\r\n     * @dev Kiểm tra đăng ký bằng địa chỉ ví\r\n     */\r\n    function isUserRegistered(address _addr) public view returns (bool) {\r\n        return patients[_addr].isRegistered;\r\n    }\r\n}"
+      }
+    }
+  }
+}

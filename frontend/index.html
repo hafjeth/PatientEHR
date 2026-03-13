@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient EHR - Blockchain 2026</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo-container"><span class="logo">EHR PRO</span></div>
+    <nav>
+      <div id="mainNav">
+        <button id="menuHome" class="menu-btn active">Home</button>
+        <button id="menuRegister" class="menu-btn">Register</button>
+        <button id="menuLogin" class="menu-btn">Login</button>
+        <button id="menuDashboard" class="menu-btn" style="display:none;">Dashboard</button>
+        <button id="menuLogout" class="menu-btn" style="display:none;">Logout</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="landingPage" class="main-content">
+      <div class="landing-content">
+        <h2>Secure Electronic Health Records</h2>
+        <p>Hệ thống hồ sơ y tế bảo mật trên nền tảng Blockchain. Quyền sở hữu dữ liệu thuộc về bạn.</p>
+        <button class="primary-btn" id="landingGetStarted">Get Started</button>
+      </div>
+    </section>
+
+    <section id="registerPage" class="main-content" style="display:none;">
+      <div class="card">
+        <h2>Patient Registration</h2>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Wallet Public Address</label>
+            <input type="text" id="regWalletAddress" placeholder="0x...">
+          </div>
+          <div class="form-group"><label>Full Name</label><input type="text" id="regFullName"></div>
+          <div class="form-group"><label>Email Address</label><input type="email" id="regEmail"></div>
+          <div class="form-group"><label>Date of Birth</label><input type="date" id="regDoB"></div>
+          <div class="form-group">
+            <label>Blood Group</label>
+            <select id="regBloodGroup">
+              <option value="A+">A+</option><option value="O+">O+</option>
+              <option value="B+">B+</option><option value="AB+">AB+</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Password</label><input type="password" id="regPassword"></div>
+          <div class="form-group"><label>Confirm Password</label><input type="password" id="regConfirmPassword"></div>
+          <div class="form-group full-width"><label>Medical Record (File)</label><input type="file" id="regFile"></div>
+        </div>
+        <div class="form-buttons">
+          <button class="primary-btn" id="regSubmit">Register</button>
+          <button class="secondary-btn" id="regClose">Close</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="loginPage" class="main-content" style="display:none;">
+      <div class="card narrow-card">
+        <h2>Patient Login</h2>
+        <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail"></div>
+        <div class="form-group"><label>Password</label><input type="password" id="loginPassword"></div>
+        <div class="form-buttons">
+          <button class="primary-btn" id="loginSubmit">Login</button>
+          <button class="secondary-btn" id="loginClose">Close</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboard" class="main-content" style="display:none;">
+      <div class="card dashboard-card">
+        <h2>Patient Dashboard</h2>
+        <p>Chào mừng trở lại, <strong id="dashboardUserName">Bệnh nhân</strong>!</p>
+        <div class="dashboard-buttons">
+          <button class="primary-btn" id="viewProfileBtn">View Profile</button>
+          <button class="primary-btn" id="viewRecordBtn">View Record (IPFS)</button>
+          <button class="primary-btn update-btn" id="updateRecordsBtn">Update Records</button>
+        </div>
+      </div>
+
+      <div id="profileModal" class="modal">
+        <div class="modal-content">
+          <span class="close-modal" id="closeProfileModal">&times;</span>
+          <h3>Thông tin hồ sơ đầy đủ</h3>
+          <div class="info-list">
+            <div class="info-item"><span>Họ và tên:</span> <strong id="dashName"></strong></div>
+            <div class="info-item"><span>Email:</span> <strong id="dashEmail"></strong></div>
+            <div class="info-item"><span>Ngày sinh:</span> <strong id="dashDoB"></strong></div>
+            <div class="info-item"><span>Nhóm máu:</span> <strong id="dashBlood"></strong></div>
+            <div class="info-item"><span>Địa chỉ ví:</span> <strong id="dashAddress"></strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="updatePage" class="main-content" style="display:none;">
+      <div class="card narrow-card">
+        <h2>Update Medical Record</h2>
+        <div class="form-group full-width">
+          <label>File hồ sơ khám bệnh mới</label>
+          <input type="file" id="updateFile">
+        </div>
+        <div class="form-buttons">
+          <button class="primary-btn" id="updateSubmit">Upload & Update</button>
+          <button class="secondary-btn" id="updateClose">Cancel</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
