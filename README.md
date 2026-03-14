@@ -60,13 +60,7 @@ Không tắt Terminal này trong suốt quá trình chạy dự án.
 Mở **Terminal số 2** (cũng tại thư mục gốc `PatientEHR`) và chạy lệnh triển khai:
 
 ```bash
-npx hardhat run scripts/deploy.ts --network localhost
-```
-
-**Lưu ý:** Nếu thư mục `scripts` dùng file `.js`, hãy đổi thành:
-
-```bash
-npx hardhat run scripts/deploy.js --network localhost
+npx hardhat ignition deploy ./ignition/modules/PatientRegistry.js --network localhost
 ```
 
 Sau khi chạy xong, Terminal sẽ trả về một **Địa chỉ Contract** (dạng `0x...`).  
