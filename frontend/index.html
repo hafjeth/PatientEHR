@@ -3,42 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EHR PRO - Hệ Thống Secure Electronic Blockchain 2026</title>
+  <title>EHR PRO - Secure Electronic Blockchain 2026</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* ===== VISIT CARDS ===== */
+    .record-visit-card {
+      background: #fff;
+      border: 1.5px solid #e0f0eb;
+      border-radius: var(--radius, 16px);
+      padding: 1.4rem 1.6rem;
+      box-shadow: 0 2px 10px rgba(10,110,94,0.06);
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .record-visit-card:hover { border-color: #9fd3c7; box-shadow: 0 4px 18px rgba(10,110,94,0.12); }
+    .rvc-header { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+    .rvc-left { display: flex; align-items: flex-start; gap: 1rem; flex: 1; min-width: 0; }
+    .rvc-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .rvc-title { font-size: 1rem; font-weight: 800; color: #1a3a2a; margin-bottom: 0.35rem; }
+    .rvc-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .rvc-type-badge { font-size: 0.78rem; font-weight: 700; border-radius: 20px; padding: 2px 10px; }
+    .rvc-detail { font-size: 0.82rem; color: #777; }
+    .rvc-right { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; flex-shrink: 0; }
+    .rvc-file-count { font-size: 0.82rem; color: #0a6e5e; font-weight: 700; background: rgba(10,110,94,0.08); padding: 4px 12px; border-radius: 20px; white-space: nowrap; }
+    .rvc-btn-add-file, .rvc-btn-toggle {
+      border: none; border-radius: 8px; padding: 0.42rem 0.9rem;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+      font-family: inherit; transition: opacity 0.2s;
+      display: flex; align-items: center; gap: 0.35rem;
+    }
+    .rvc-btn-add-file { background: #0a6e5e; color: #fff; }
+    .rvc-btn-toggle   { background: #fff; color: #555; border: 1.5px solid #e0e0e0; }
+    .rvc-btn-add-file:hover, .rvc-btn-toggle:hover { opacity: 0.82; }
+
+    /* Files list inside a card */
+    .rvc-files { margin-top: 1rem; border-top: 1px solid #e8f5f0; padding-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+    .rvc-file-item { display: flex; align-items: center; justify-content: space-between; background: #f6fdfb; border: 1px solid #d4ede6; border-radius: 10px; padding: 0.7rem 1rem; }
+    .rvc-file-info  { display: flex; align-items: center; gap: 0.7rem; }
+    .rvc-file-icon  { font-size: 1.3rem; }
+    .rvc-file-name  { font-size: 0.9rem; font-weight: 700; color: #1a3a2a; }
+    .rvc-file-date  { font-size: 0.78rem; color: #aaa; margin-top: 2px; }
+    .rvc-btn-view {
+      background: #0a6e5e; color: #fff; border: none; border-radius: 8px;
+      padding: 0.4rem 1rem; font-size: 0.82rem; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center; gap: 0.4rem; font-family: inherit;
+    }
+    .rvc-btn-view:hover { opacity: 0.85; }
+
+    /* Form pages */
+    .form-page-inner { max-width: 580px; margin: 0 auto; width: 100%; padding: 2.5rem 1.5rem; }
+    .form-page-inner h2 { font-size: 1.5rem; font-weight: 800; color: #0a6e5e; margin-bottom: 0.3rem; }
+    .form-page-inner .subtitle { color: #888; font-size: 0.9rem; margin-bottom: 1.8rem; }
+    .fp-field { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.1rem; }
+    .fp-field label { font-size: 0.82rem; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: 0.04em; }
+    .fp-field input, .fp-field select {
+      border: 1.5px solid #d0e8e0; border-radius: 10px; padding: 0.7rem 1rem;
+      font-size: 0.95rem; font-family: inherit; outline: none; background: #fff;
+      transition: border-color 0.2s;
+    }
+    .fp-field input:focus, .fp-field select:focus { border-color: #0a6e5e; }
+    .fp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .fp-upload {
+      border: 2px dashed #b2d8ce; border-radius: 12px; padding: 1.5rem;
+      text-align: center; cursor: pointer; color: #0a6e5e; font-size: 0.9rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .fp-upload:hover { background: rgba(10,110,94,0.04); }
+    .fp-upload svg { margin-bottom: 0.5rem; stroke: #0a6e5e; }
+    .fp-btns { display: flex; gap: 1rem; margin-top: 1.8rem; }
+    .fp-btn-primary {
+      background: linear-gradient(135deg, #0a6e5e, #0d8a74); color: #fff;
+      border: none; border-radius: 12px; padding: 0.8rem 2rem;
+      font-size: 1rem; font-weight: 700; cursor: pointer; flex: 1; font-family: inherit;
+    }
+    .fp-btn-primary:hover { opacity: 0.9; }
+    .fp-btn-ghost {
+      background: #f0faf7; color: #0a6e5e; border: 1.5px solid #b2d8ce;
+      border-radius: 12px; padding: 0.8rem 1.5rem;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer; font-family: inherit;
+    }
+    .fp-context-box {
+      background: linear-gradient(135deg, #f0faf7, #e8f5f0);
+      border: 1.5px solid #b2d8ce; border-radius: 12px;
+      padding: 1rem 1.2rem; margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.8rem;
+    }
+    .fp-context-box span { font-size: 1.3rem; }
+    .fp-context-box strong { font-size: 0.95rem; color: #0a6e5e; }
+    .fp-context-box p { font-size: 0.82rem; color: #666; margin-top: 2px; }
+
+    #recordsList { display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem; }
+    .records-section { width: 100%; padding: 1rem 0; }
+    .records-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .records-section-header h3 { font-size: 1.05rem; font-weight: 800; color: #1a4a3a; }
+    .records-count { background: #e0f5ef; color: #0a6e5e; border-radius: 20px; padding: 3px 12px; font-size: 0.82rem; font-weight: 700; }
+  </style>
 </head>
 <body>
 
-  <!-- ===== HEADER ===== -->
+  <!-- HEADER -->
   <header id="mainHeader">
     <div class="header-inner">
       <div class="logo-container">
         <div class="logo-icon">
-          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="40" height="40" rx="10" fill="#0a6e5e"/>
-            <path d="M20 8v24M8 20h24" stroke="white" stroke-width="4" stroke-linecap="round"/>
-          </svg>
+          <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#0a6e5e"/><path d="M20 8v24M8 20h24" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>
         </div>
         <div class="logo-text">
           <span class="logo-main">EHR PRO</span>
           <span class="logo-sub">Blockchain Healthcare</span>
         </div>
       </div>
-
       <nav id="mainNav">
         <button id="menuHome" class="menu-btn active">Home</button>
-        <button id="menuRegister" class="menu-btn">Register</button>
-        <button id="menuLogin" class="menu-btn">Login</button>
+        <button id="menuRegister" class="menu-btn">Sign Up</button>
+        <button id="menuLogin" class="menu-btn">Sign In</button>
         <button id="menuDashboard" class="menu-btn" style="display:none;">Dashboard</button>
-        <button id="menuLogout" class="menu-btn logout-btn" style="display:none;">Logout</button>
+        <button id="menuLogout" class="menu-btn logout-btn" style="display:none;">Sign Out</button>
       </nav>
-
       <div class="header-cta">
         <button class="hotline-btn">
           <svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.01 2.22 2 2 0 012 .04h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92v2z" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          1900 8146
+          GROUP 7
         </button>
         <button class="appt-btn" id="headerRegisterBtn">Get Started</button>
       </div>
@@ -46,29 +136,17 @@
   </header>
 
   <main>
-    <!-- ===== LANDING PAGE ===== -->
-    <section id="landingPage" class="main-content">
 
-      <!-- HERO -->
+    <!-- ===== LANDING ===== -->
+    <section id="landingPage" class="main-content">
       <div class="hero-section">
         <div class="hero-overlay"></div>
         <div class="hero-center">
-          <div class="hero-badge">
-            Blockchain · IPFS · Smart Contract · 2026
-          </div>
-          <h1 class="hero-title">
-            Secure Electronic
-            <em>Health Records</em>
-          </h1>
-          <p class="hero-desc">
-            A decentralized Electronic Health Record system built on Blockchain technology.
-            Patients own their data — always private, immutable, and accessible worldwide.
-          </p>
-          <div class="hero-actions">
-            <button class="btn-primary" id="landingGetStarted">
-              Get Started
-              <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
+          <div class="hero-badge">Blockchain · IPFS · Smart Contract · 2026</div>
+          <h1 class="hero-title">Secure Electronic <em>Health Records</em></h1>
+          <p class="hero-desc">A decentralized EHR system. Patients own their data — always private, immutable, and accessible worldwide.</p>
+          <div class="hero-actions" id="heroActions">
+            <button class="btn-primary" id="landingGetStarted">Get Started <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
             <button class="btn-ghost" id="landingLoginBtn">Sign In</button>
           </div>
           <div class="hero-tags">
@@ -79,291 +157,60 @@
           </div>
         </div>
       </div>
-
-      <!-- QUICK ACCESS CARDS — CIH style -->
       <div class="quicklinks-section">
         <div class="quicklinks-inner">
-
-          <div class="ql-card">
-            <div class="ql-icon-wrap">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 10v28M10 24h28" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
-                <circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M14 14s2 3 0 6M34 14s-2 3 0 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <span class="ql-label">Register Patient</span>
-          </div>
-
-          <div class="ql-card">
-            <div class="ql-icon-wrap">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="10" y="8" width="28" height="34" rx="4" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M17 18h14M17 24h14M17 30h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                <path d="M32 32l8 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <span class="ql-label">View Medical Records</span>
-          </div>
-
-          <div class="ql-card ql-card-accent">
-            <div class="ql-icon-wrap">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="8" y="10" width="32" height="30" rx="4" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M8 18h32" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M16 8v6M32 8v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                <path d="M16 26h4v6h-4zM22 23h4v9h-4zM28 28h4v4h-4z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
-            <span class="ql-label">Update Records</span>
-          </div>
-
-          <div class="ql-card">
-            <div class="ql-icon-wrap">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 12C17.373 12 12 17.373 12 24s5.373 12 12 12 12-5.373 12-12S30.627 12 24 12z" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M24 20v8M24 32v2" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <span class="ql-label">Full Encryption</span>
-          </div>
-
-          <div class="ql-card">
-            <div class="ql-icon-wrap">
-              <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M24 10v28M10 24h28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-                <path d="M16 16l16 16M32 16L16 32" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
-                <circle cx="24" cy="24" r="14" stroke="currentColor" stroke-width="2.5"/>
-              </svg>
-            </div>
-            <span class="ql-label">24/7 Support</span>
-          </div>
-
+          <div class="ql-card"><div class="ql-icon-wrap"><svg viewBox="0 0 48 48" fill="none"><path d="M24 10v28M10 24h28" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/><circle cx="24" cy="24" r="16" stroke="currentColor" stroke-width="2.5"/></svg></div><span class="ql-label">Register Patient</span></div>
+          <div class="ql-card"><div class="ql-icon-wrap"><svg viewBox="0 0 48 48" fill="none"><rect x="10" y="8" width="28" height="34" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M17 18h14M17 24h14M17 30h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="ql-label">View Medical Records</span></div>
+          <div class="ql-card ql-card-accent"><div class="ql-icon-wrap"><svg viewBox="0 0 48 48" fill="none"><rect x="8" y="10" width="32" height="30" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M8 18h32M16 8v6M32 8v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div><span class="ql-label">Update Records</span></div>
+          <div class="ql-card"><div class="ql-icon-wrap"><svg viewBox="0 0 48 48" fill="none"><path d="M24 12C17.373 12 12 17.373 12 24s5.373 12 12 12 12-5.373 12-12S30.627 12 24 12z" stroke="currentColor" stroke-width="2.5"/><path d="M24 20v8M24 32v2" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div><span class="ql-label">Full Encryption</span></div>
+          <div class="ql-card"><div class="ql-icon-wrap"><svg viewBox="0 0 48 48" fill="none"><path d="M24 10v28M10 24h28" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><circle cx="24" cy="24" r="14" stroke="currentColor" stroke-width="2.5"/></svg></div><span class="ql-label">24/7 Support</span></div>
         </div>
-
-        <!-- Stats bar below cards -->
         <div class="ql-stats-bar">
-          <div class="ql-stat">
-            <span class="ql-stat-num">500<span class="ql-stat-sup">+</span></span>
-            <span class="ql-stat-lbl">Registered Patients</span>
-          </div>
+          <div class="ql-stat"><span class="ql-stat-num">500<span class="ql-stat-sup">+</span></span><span class="ql-stat-lbl">Registered Patients</span></div>
           <div class="ql-stat-div"></div>
-          <div class="ql-stat">
-            <span class="ql-stat-num">100<span class="ql-stat-sup">%</span></span>
-            <span class="ql-stat-lbl">Encrypted Data</span>
-          </div>
+          <div class="ql-stat"><span class="ql-stat-num">100<span class="ql-stat-sup">%</span></span><span class="ql-stat-lbl">Encrypted Data</span></div>
           <div class="ql-stat-div"></div>
-          <div class="ql-stat">
-            <span class="ql-stat-num">24<span class="ql-stat-sup">/7</span></span>
-            <span class="ql-stat-lbl">Always Accessible</span>
-          </div>
+          <div class="ql-stat"><span class="ql-stat-num">24<span class="ql-stat-sup">/7</span></span><span class="ql-stat-lbl">Always Accessible</span></div>
           <div class="ql-stat-div"></div>
-          <div class="ql-stat">
-            <span class="ql-stat-num">0</span>
-            <span class="ql-stat-lbl">Central Authority</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ABOUT SECTION — 2 column redesign -->
-      <div class="about-section">
-        <div class="about-2col">
-
-          <!-- LEFT: text + tags -->
-          <div class="about-left">
-            <span class="about-eyebrow">ABOUT US</span>
-            <h2 class="about-title-new">Next-generation <em>Health Records</em></h2>
-            <div class="about-divider"></div>
-            <p class="about-desc-new">
-              EHR PRO is an Electronic Health Record platform built on Blockchain technology.
-              We empower patients to take full ownership of their medical data —
-              secured, immutable, and accessible anywhere in the world.
-            </p>
-
-            <div class="about-tags">
-              <span class="atag">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5 6.5 4z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                Immutable Records
-              </span>
-              <span class="atag">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 14s5-2.5 5-6.25V3.125L8 1.25 3 3.125V7.75C3 11.5 8 14 8 14z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                Blockchain Security
-              </span>
-              <span class="atag">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zM2 14s-1 0-1-1 1-4 7-4 7 3 7 4-1 1-1 1H2z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                Patient-Owned
-              </span>
-              <span class="atag">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5v13M1.5 8h13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                IPFS Storage
-              </span>
-            </div>
-          </div>
-
-          <!-- RIGHT: feature cards grid -->
-          <div class="about-right">
-            <div class="afc-grid">
-
-              <div class="afc-card afc-accent">
-                <div class="afc-icon-wrap">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <h4>Blockchain Security</h4>
-                <p>Data is written on-chain — immutable and cannot be altered or deleted by anyone.</p>
-              </div>
-
-              <div class="afc-card">
-                <div class="afc-icon-wrap">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <h4>IPFS Storage</h4>
-                <p>Medical files stored on decentralized IPFS — no central server, no data loss.</p>
-              </div>
-
-              <div class="afc-card">
-                <div class="afc-icon-wrap">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <h4>Patient Ownership</h4>
-                <p>You are the sole owner of your data. Only you can grant access to your records.</p>
-              </div>
-
-              <div class="afc-card afc-accent-soft">
-                <div class="afc-icon-wrap">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </div>
-                <h4>Smart Contract</h4>
-                <p>Access control is automated via smart contract — fully transparent, tamper-proof.</p>
-              </div>
-
-              <div class="afc-card">
-                <div class="afc-icon-wrap">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                </div>
-                <h4>MetaMask Auth</h4>
-                <p>Sign in with your MetaMask wallet — no passwords, no identity spoofing possible.</p>
-              </div>
-
-              <div class="afc-card">
-                <div class="afc-icon-wrap">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <h4>Decentralized Network</h4>
-                <p>No single point of failure — data is distributed and always available.</p>
-              </div>
-
-            </div>
-          </div>
-
+          <div class="ql-stat"><span class="ql-stat-num">0</span><span class="ql-stat-lbl">Central Authority</span></div>
         </div>
       </div>
-
-      <!-- ===== TEAM SECTION ===== -->
       <div class="team-section">
         <div class="team-inner">
-
-          <div class="team-header">
-            <h2 class="team-title">OUR TEAM</h2>
-            <div class="team-line"></div>
-            <p class="team-desc">The passionate developers behind EHR PRO — building the future of decentralized healthcare.</p>
-          </div>
-
+          <div class="team-header"><h2 class="team-title">OUR TEAM</h2><div class="team-line"></div><p class="team-desc">The passionate developers behind EHR PRO.</p></div>
           <div class="team-grid">
-
-            <div class="team-card">
-              <div class="tc-photo">
-                <img src="./public/team2.jpg" alt="Member 1" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                <div class="tc-placeholder">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </div>
-                <div class="tc-overlay">
-                </div>
-              </div>
-              <div class="tc-info">
-                <h3>Nguyen Thi Thu Diep</h3>
-                <span class="tc-id">Student ID: K234111387</span>
-              </div>
-            </div>
-
-            <div class="team-card featured">
-              <div class="tc-photo">
-                <img src="./public/team1.jpg" alt="Member 2" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                <div class="tc-placeholder">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </div>
-                <div class="tc-overlay">
-                </div>
-              </div>
-              <div class="tc-info">
-                <h3>Truong Nguyet Ha</h3>
-                <span class="tc-id">Student ID: K234111388</span>
-              </div>
-            </div>
-
-            <div class="team-card">
-              <div class="tc-photo">
-                <img src="./public/team3.jpg" alt="Member 3" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                <div class="tc-placeholder">
-                  <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                </div>
-                <div class="tc-overlay">
-                </div>
-              </div>
-              <div class="tc-info">
-                <h3>Nguyen Thi Yen Nhi</h3>
-                <span class="tc-id">Student ID: K234111409</span>
-              </div>
-            </div>
-
+            <div class="team-card"><div class="tc-photo"><img src="./team2.jpg" alt="Member 1" onerror="this.style.display='none'"><div class="tc-placeholder"><svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="tc-overlay"></div></div><div class="tc-info"><h3>Nguyen Thi Thu Diep</h3><span class="tc-id">K234111387</span></div></div>
+            <div class="team-card featured"><div class="tc-photo"><img src="./team1.jpg" alt="Member 2" onerror="this.style.display='none'"><div class="tc-placeholder"><svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="tc-overlay"></div></div><div class="tc-info"><h3>Truong Nguyet Ha</h3><span class="tc-id">K234111388</span></div></div>
+            <div class="team-card"><div class="tc-photo"><img src="./team3.jpg" alt="Member 3" onerror="this.style.display='none'"><div class="tc-placeholder"><svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="tc-overlay"></div></div><div class="tc-info"><h3>Nguyen Thi Yen Nhi</h3><span class="tc-id">K234111409</span></div></div>
           </div>
         </div>
       </div>
-
     </section>
 
-    <!-- ===== REGISTER PAGE ===== -->
+    <!-- ===== REGISTER ===== -->
     <section id="registerPage" class="main-content cih-page" style="display:none;">
       <div class="cih-layout">
-
-        <!-- LEFT: Info panel -->
         <div class="cih-left">
           <div class="cih-left-inner">
-            <div class="cih-brand-mark">
-              <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.15)"/><path d="M20 8v24M8 20h24" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>
-              <span>EHR PRO</span>
-            </div>
-            <h2 class="cih-left-title">Register<br>Patient</h2>
-            <p class="cih-left-desc">Create your on-chain medical record. Your data is encrypted and stored in a decentralized manner on Blockchain.</p>
+            <div class="cih-brand-mark"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.15)"/><path d="M20 8v24M8 20h24" stroke="white" stroke-width="4" stroke-linecap="round"/></svg><span>EHR PRO</span></div>
+            <h2 class="cih-left-title">Create Your<br>Account</h2>
+            <p class="cih-left-desc">Register your identity on-chain. After signing in, you can upload and manage your medical visit records.</p>
             <div class="cih-features">
               <div class="cih-feat"><span class="cih-feat-dot"></span>Blockchain Security</div>
-              <div class="cih-feat"><span class="cih-feat-dot"></span>Decentralized IPFS Storage</div>
+              <div class="cih-feat"><span class="cih-feat-dot"></span>Multiple files per visit</div>
               <div class="cih-feat"><span class="cih-feat-dot"></span>You Control Your Data</div>
             </div>
           </div>
           <div class="cih-left-deco"></div>
         </div>
-
-        <!-- RIGHT: Form -->
         <div class="cih-right">
           <div class="cih-form-wrap">
-            <div class="cih-form-header">
-              <h3>Registration Details</h3>
-              <p>Please fill in all the information below</p>
-            </div>
-
+            <div class="cih-form-header"><h3>Create Account</h3><p>Fill in your details to create an account</p></div>
             <div class="cih-form-body">
               <div class="cih-form-row two-col">
-                <div class="cih-field">
-                  <label>Full Name</label>
-                  <input type="text" id="regFullName" placeholder="John Doe">
-                </div>
-                <div class="cih-field">
-                  <label>Email</label>
-                  <input type="email" id="regEmail" placeholder="example@email.com">
-                </div>
+                <div class="cih-field"><label>Full Name</label><input type="text" id="regFullName" placeholder="John Doe"></div>
+                <div class="cih-field"><label>Email</label><input type="email" id="regEmail" placeholder="example@email.com"></div>
               </div>
-
               <div class="cih-form-row two-col">
                 <div class="cih-field">
                   <label>Password</label>
@@ -386,92 +233,51 @@
                   </div>
                 </div>
               </div>
-
               <div class="cih-form-row two-col">
-                <div class="cih-field">
-                  <label>Date of Birth</label>
-                  <input type="date" id="regDoB">
-                </div>
+                <div class="cih-field"><label>Date of Birth</label><input type="date" id="regDoB"></div>
                 <div class="cih-field">
                   <label>Blood Group</label>
                   <select id="regBloodGroup">
-                    <option value="">Select blood group</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
+                    <option value="">Select</option>
+                    <option>A+</option><option>A-</option><option>O+</option><option>O-</option>
+                    <option>B+</option><option>B-</option><option>AB+</option><option>AB-</option>
                   </select>
                 </div>
               </div>
-
-              <div class="cih-form-row">
-                <div class="cih-field">
-                  <label>Medical Record File</label>
-                  <div class="cih-upload" id="fileUploadArea">
-                    <input type="file" id="regFile" style="display:none;">
-                    <svg viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                    <span id="fileLabel">Drop file here or <strong>browse</strong></span>
-                    <small>PDF, JPG, PNG — max 10MB</small>
-                  </div>
-                </div>
-              </div>
-
               <div class="cih-form-footer">
                 <p class="cih-policy">By clicking Register, you agree to our <a href="#">Privacy Policy</a>.</p>
                 <div class="cih-actions">
-                  <button class="cih-btn-primary" id="regSubmit">REGISTER</button>
+                  <button class="cih-btn-primary" id="regSubmit">CREATE ACCOUNT</button>
                   <button class="cih-btn-ghost" id="regClose">← Back</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </section>
 
-    <!-- ===== LOGIN PAGE ===== -->
+    <!-- ===== LOGIN ===== -->
     <section id="loginPage" class="main-content cih-page" style="display:none;">
       <div class="cih-layout">
-
-        <!-- LEFT -->
         <div class="cih-left">
           <div class="cih-left-inner">
-            <div class="cih-brand-mark">
-              <svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.15)"/><path d="M20 8v24M8 20h24" stroke="white" stroke-width="4" stroke-linecap="round"/></svg>
-              <span>EHR PRO</span>
-            </div>
+            <div class="cih-brand-mark"><svg viewBox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="rgba(255,255,255,0.15)"/><path d="M20 8v24M8 20h24" stroke="white" stroke-width="4" stroke-linecap="round"/></svg><span>EHR PRO</span></div>
             <h2 class="cih-left-title">Sign In to<br>Your Account</h2>
-            <p class="cih-left-desc">Access your electronic health records anytime, anywhere. Connect your MetaMask wallet to authenticate.</p>
+            <p class="cih-left-desc">Access your health records anytime. Connect your MetaMask wallet to authenticate.</p>
             <div class="cih-features">
               <div class="cih-feat"><span class="cih-feat-dot"></span>MetaMask Authentication</div>
-              <div class="cih-feat"><span class="cih-feat-dot"></span>No Centralized Password</div>
+              <div class="cih-feat"><span class="cih-feat-dot"></span>Password verified on-chain</div>
               <div class="cih-feat"><span class="cih-feat-dot"></span>Maximum Security</div>
             </div>
           </div>
           <div class="cih-left-deco"></div>
         </div>
-
-        <!-- RIGHT -->
         <div class="cih-right">
           <div class="cih-form-wrap login-wrap">
-            <div class="cih-form-header">
-              <h3>Sign In</h3>
-              <p>Enter your registered email and connect your MetaMask wallet</p>
-            </div>
-
+            <div class="cih-form-header"><h3>Sign In</h3><p>Enter your email and password, then confirm with MetaMask</p></div>
             <div class="cih-form-body">
-              <div class="cih-form-row">
-                <div class="cih-field">
-                  <label>Email</label>
-                  <input type="email" id="loginEmail" placeholder="example@email.com">
-                </div>
-              </div>
-
+              <div class="cih-form-row"><div class="cih-field"><label>Email</label><input type="email" id="loginEmail" placeholder="example@email.com"></div></div>
               <div class="cih-form-row">
                 <div class="cih-field">
                   <label>Password</label>
@@ -484,14 +290,12 @@
                   </div>
                 </div>
               </div>
-
               <div class="cih-metamask-note">
                 <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-                <span>MetaMask will be automatically prompted to connect when you sign in</span>
+                <span>MetaMask will be prompted automatically</span>
               </div>
-
               <div class="cih-form-footer">
-                <p class="cih-policy">Don't have an account? <a href="#" id="goToRegisterFromLogin">Register now</a></p>
+                <p class="cih-policy">Don't have an account? <a href="#" id="goToRegisterFromLogin">Sign Up</a></p>
                 <div class="cih-actions">
                   <button class="cih-btn-primary full" id="loginSubmit">SIGN IN</button>
                   <button class="cih-btn-ghost" id="loginClose">← Back</button>
@@ -500,7 +304,6 @@
             </div>
           </div>
         </div>
-
       </div>
     </section>
 
@@ -508,146 +311,150 @@
     <section id="dashboard" class="main-content page-section" style="display:none;">
       <div class="dashboard-wrapper">
         <div class="dash-welcome">
-          <div class="dash-avatar">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div>
-            <p class="dash-greeting">Chào mừng trở lại!</p>
-            <h2 id="dashboardUserName" class="dash-name">Patient</h2>
-          </div>
+          <div class="dash-avatar"><svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div><p class="dash-greeting">Welcome back!</p><h2 id="dashboardUserName" class="dash-name">Patient</h2></div>
           <span class="dash-status">● Verified</span>
         </div>
-
         <div class="dash-cards">
           <div class="dash-action-card" id="viewProfileBtn">
-            <div class="dac-icon blue">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div class="dac-content">
-              <h3>Personal Profile</h3>
-              <p>View your full information</p>
-            </div>
+            <div class="dac-icon blue"><svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="dac-content"><h3>Personal Profile</h3><p>View your account details</p></div>
             <svg class="dac-arrow" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
+        </div>
 
-          <div class="dash-action-card" id="viewRecordBtn">
-            <div class="dac-icon green">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div class="dac-content">
-              <h3>Medical Records</h3>
-              <p>View your file on IPFS</p>
-            </div>
-            <svg class="dac-arrow" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <!-- Medical Records -->
+        <div class="records-section">
+          <div class="records-section-header">
+            <h3>Medical Records</h3>
+            <span style="font-size:0.78rem; color:#0a6e5e; background:rgba(10,110,94,0.08); padding:4px 12px; border-radius:20px; font-weight:600;">
+              Immutable · On-chain
+            </span>
           </div>
-
-          <div class="dash-action-card" id="updateRecordsBtn">
-            <div class="dac-icon teal">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div class="dac-content">
-              <h3>Update Records</h3>
-              <p>Upload a new medical file</p>
-            </div>
-            <svg class="dac-arrow" viewBox="0 0 24 24" fill="none"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
+          <div id="recordsList"><p style="color:#aaa;text-align:center;padding:2rem">Loading...</p></div>
         </div>
       </div>
 
       <!-- Profile Modal -->
       <div id="profileModal" class="modal">
         <div class="modal-content">
-          <button class="close-modal" id="closeProfileModal">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          </button>
+          <button class="close-modal" id="closeProfileModal"><svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
           <div class="modal-header">
-            <div class="modal-avatar">
-              <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </div>
-            <div>
-              <h3 id="dashName">Tên Patient</h3>
-              <span class="modal-verified">✓ Verified on Blockchain</span>
-            </div>
+            <div class="modal-avatar"><svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div><h3 id="dashName">Patient</h3><span class="modal-verified">✓ Verified on Blockchain</span></div>
           </div>
           <div class="info-list">
-            <div class="info-item">
-              <span class="info-key">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 8a3 3 0 100-6 3 3 0 000 6zM2 14s-1 0-1-1 1-4 7-4 7 3 7 4-1 1-1 1H2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                Full Name
-              </span>
-              <strong id="dashName2">—</strong>
-            </div>
-            <div class="info-item">
-              <span class="info-key">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M2 4l6 5 6-5M2 4h12v9H2V4z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                Email
-              </span>
-              <strong id="dashEmail">—</strong>
-            </div>
-            <div class="info-item">
-              <span class="info-key">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M5 1v3M11 1v3M1 6h14M2 2h12a1 1 0 011 1v10a1 1 0 01-1 1H2a1 1 0 01-1-1V3a1 1 0 011-1z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                Date of Birth
-              </span>
-              <strong id="dashDoB">—</strong>
-            </div>
-            <div class="info-item">
-              <span class="info-key">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M8 1a7 7 0 100 14A7 7 0 008 1zM8 5v3l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                Blood Group
-              </span>
-              <strong id="dashBlood">—</strong>
-            </div>
-            <div class="info-item">
-              <span class="info-key">
-                <svg viewBox="0 0 16 16" fill="none"><path d="M10.5 8.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM13.5 8.5C13.5 11.538 11.538 14 8.5 14S2 11.538 2 8.5 4.462 2 8.5 2s5 2.462 5 6.5z" stroke="currentColor" stroke-width="1.5"/></svg>
-                Wallet Address
-              </span>
-              <strong id="dashAddress" class="mono">—</strong>
-            </div>
+            <div class="info-item"><span class="info-key">Full Name</span><strong id="dashName2">—</strong></div>
+            <div class="info-item"><span class="info-key">Email</span><strong id="dashEmail">—</strong></div>
+            <div class="info-item"><span class="info-key">Date of Birth</span><strong id="dashDoB">—</strong></div>
+            <div class="info-item"><span class="info-key">Blood Group</span><strong id="dashBlood">—</strong></div>
+            <div class="info-item"><span class="info-key">Wallet Address</span><strong id="dashAddress" class="mono">—</strong></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ===== UPDATE PAGE ===== -->
-    <section id="updatePage" class="main-content page-section" style="display:none;">
-      <div class="page-inner narrow">
-        <div class="page-header-bar centered">
-          <div class="page-icon">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <!-- ===== ADD VISIT RECORD ===== -->
+    <section id="addRecordPage" class="main-content page-section" style="display:none;">
+      <div class="form-page-inner">
+        <h2>New Medical Record</h2>
+        <p class="subtitle">Fill in the visit details and upload as many files as you want — or none at all.</p>
+
+        <div class="fp-field"><label>Title *</label><input type="text" id="addTitle" placeholder="e.g. General Checkup — March 2026"></div>
+        <div class="fp-row">
+          <div class="fp-field">
+            <label>Type *</label>
+            <select id="addRecordType" >
+              <option value="LabTest">Lab Test</option>
+              <option value="Diagnosis">Diagnosis / Checkup</option>
+              <option value="Prescription">Prescription</option>
+              <option value="Admission">Hospital Admission</option>
+              <option value="Other">Other</option>
+            </select>
+            <input type="text" id="addCustomType" placeholder="e.g. MRI Scan, CT Scan, Ultrasound..." 
+              style="display:none; margin-top:0.5rem; border:1.5px solid #d0e8e0; border-radius:10px; padding:0.7rem 1rem; font-size:0.95rem; font-family:inherit; outline:none; width:100%; box-sizing:border-box;">
           </div>
-          <div>
-            <h2>Update Records</h2>
-            <p class="page-subtitle">Upload a new examination document</p>
-          </div>
+          <div class="fp-field"><label>Date *</label><input type="date" id="addExamDate"></div>
         </div>
-        <div class="form-group" style="margin-top:1.5rem">
-          <label>File Medical Records Mới</label>
-          <div class="file-upload-area" id="updateFileArea">
-            <input type="file" id="updateFile" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <span id="updateFileLabel">Drop file here or <strong>browse</strong></span>
+        <div class="fp-field"><label>Doctor / Hospital *</label><input type="text" id="addDoctor" placeholder="e.g. Dr. John Smith — City General Hospital"></div>
+
+        <div class="fp-field">
+          <label>Files <span style="color:#dc2626;font-weight:600;">*</span> <span style="color:#aaa;font-weight:400;text-transform:none;">— select at least one file</span></label>
+          <div class="fp-upload" id="addFileArea" style="position:relative;">
+            <input type="file" id="addFile" style="display:none;" accept=".pdf,.jpg,.jpeg,.png" multiple>
+            <svg viewBox="0 0 24 24" fill="none" width="32" height="32"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <p id="addFileLabel">Drop files here or <strong>browse</strong></p>
+            <small style="color:#aaa;">PDF, JPG, PNG — multiple files supported</small>
           </div>
+          <div id="addFileList" style="display:flex;flex-direction:column;gap:0.4rem;margin-top:0.6rem;"></div>
         </div>
-        <div class="form-buttons" style="margin-top:2rem">
-          <button class="btn-primary" id="updateSubmit">Upload & Update →</button>
-          <button class="btn-secondary" id="updateClose">Cancel</button>
+
+        <div class="fp-btns">
+          <button class="fp-btn-primary" id="addRecordSubmit">Save Record</button>
+          <button class="fp-btn-ghost" id="addRecordClose">← Back</button>
         </div>
       </div>
     </section>
+
+    <!-- ===== ADD FILE TO EXISTING RECORD ===== -->
+    <section id="addFilePage" class="main-content page-section" style="display:none;">
+      <div class="form-page-inner">
+        <h2>Add Files to Record</h2>
+        <p class="subtitle">Upload one or more documents to this record</p>
+
+        <div class="fp-context-box">
+          <div class="dac-icon teal" style="width:44px;height:44px;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M14 2v6h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <div>
+            <strong id="addFileTitle">Medical Record</strong>
+            <p>Adding files to this record</p>
+          </div>
+        </div>
+
+        <input type="hidden" id="addFileRecordIndex">
+        <div class="fp-field">
+          <label>Files <span style="color:#aaa;font-weight:400;text-transform:none;">(select as many as you want)</span></label>
+          <div class="fp-upload" id="addFileUploadArea">
+            <input type="file" id="addFileInput" style="display:none;" accept=".pdf,.jpg,.jpeg,.png" multiple>
+            <svg viewBox="0 0 24 24" fill="none" width="32" height="32"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <p id="addFileLabel2">Drop files here or <strong>browse</strong></p>
+            <small style="color:#aaa;">PDF, JPG, PNG — multiple files supported</small>
+          </div>
+          <div id="addFileList2" style="display:flex;flex-direction:column;gap:0.4rem;margin-top:0.6rem;"></div>
+        </div>
+        <div class="fp-btns">
+          <button class="fp-btn-primary" id="addFileSubmit">Upload Files</button>
+          <button class="fp-btn-ghost" id="addFileClose">← Back</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Edit Record removed — blockchain is immutable -->
+
   </main>
 
   <footer>
     <div class="footer-inner">
-      <div class="footer-brand">
-        <span class="logo-main">EHR PRO</span>
-        <p>Blockchain-based health records system · 2026</p>
-      </div>
+      <div class="footer-brand"><span class="logo-main">EHR PRO</span><p>Blockchain-based health records system · 2026</p></div>
       <div class="footer-copy">© 2026 EHR PRO. All rights reserved.</div>
     </div>
   </footer>
 
+  <script>
+    function toggleOtherInput(selectId, inputId) {
+        const select = document.getElementById(selectId);
+        const input  = document.getElementById(inputId);
+        if (!select || !input) return;
+        if (select.value === 'Other') {
+            input.style.display = 'block';
+            input.focus();
+        } else {
+            input.style.display = 'none';
+            input.value = '';
+        }
+    }
+  </script>
   <script type="module" src="./main.js"></script>
 </body>
 </html>
